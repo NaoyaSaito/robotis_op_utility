@@ -108,7 +108,7 @@ catkin_package(
  INCLUDE_DIRS include
  LIBRARIES robotis_op_utility
  CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs
- DEPENDS system_lib eigen3
+ DEPENDS system_lib
 )
 
 ###########
@@ -120,13 +120,19 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  /usr/include/eigen3
+)
+
+set(HEADERS
+  include/${PROJECT_NAME}/robotis_body.h
+  # include/${PROJECT_NAME}/eigen_types.h
+)
+
+set(SOURCES
+  src/robotis_body.cpp
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/robotis_op_utility.cpp
-# )
+add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -136,7 +142,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(robotis_op_utility src/robotisBody.cpp)
+# add_executable(robotis_op_utility src/robotis_body.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -151,6 +157,7 @@ add_executable(robotis_op_utility src/robotisBody.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(robotis_op_utility
   ${catkin_LIBRARIES}
+  ${eigen3_LIBRARIES}
 )
 
 #############
