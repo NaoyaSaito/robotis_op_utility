@@ -1,13 +1,12 @@
+<!--run before gtest  -->
 <launch>
   <include file="$(find robotis_op_moveit)/launch/planning_context.launch">
     <arg name="load_robot_description" value="true"/>
   </include>
 
-  <node name="robotis_op_utility"
-        pkg="robotis_op_utility"
-        type="robotis_op_utility"
-        respawn="false" output="screen">
-    <rosparam command="load"
-              file="$(find robotis_op_moveit)/config/kinematics.yaml"/>
-  </node>
+  <rosparam command="load"
+            file="$(find robotis_op_moveit)/config/kinematics.yaml"/>
+
+  <include file="$(find robotis_op_utility)/launch/set_link_mass.launch"/>
+
 </launch>

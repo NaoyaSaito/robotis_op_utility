@@ -1,0 +1,6 @@
+<launch>
+    <group ns="robot_description_model">
+        <rosparam command="load"
+            file="$(find robotis_op_utility)/config/robotis_mass.yaml"/>
+    </group>
+</launch>
