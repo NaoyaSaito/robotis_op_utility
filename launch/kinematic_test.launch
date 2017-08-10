@@ -4,9 +4,9 @@
     <arg name="load_robot_description" value="true"/>
   </include>
 
-  <rosparam command="load"
-            file="$(find robotis_op_moveit)/config/kinematics.yaml"/>
+  <!-- <rosparam command="load"
+            file="$(find robotis_op_moveit)/config/kinematics.yaml"/> -->
 
-  <include file="$(find robotis_op_utility)/launch/set_link_mass.launch"/>
+  <!-- <include file="$(find robotis_op_utility)/launch/set_link_mass.launch"/> -->
 
 </launch>

@@ -16,9 +16,22 @@ RobotisBody::RobotisBody(ros::NodeHandle nnh) {
 
   // set body state
   link_names = body_model->getLinkModelNames();
+  dof = 24;
   urdf::Model urdf_model = readUrdfFile(read_urdf_rosparam);
   total_mass = setModelMass(urdf_model);
   setLinksCoGVector(urdf_model);
+
+  std::string name[] = {
+      "j_shoulder_l", "j_high_arm_l", "j_low_arm_l",  "j_wrist_l",
+      "j_gripper_l",  "j_shoulder_r", "j_high_arm_r", "j_low_arm_r",
+      "j_wrist_r",    "j_gripper_r",  "j_pan",        "j_tilt",
+      "j_pelvis_l",   "j_thigh1_l",   "j_thigh2_l",   "j_tibia_l",
+      "j_ankle1_l",   "j_ankle2_l",   "j_pelvis_r",   "j_thigh1_r",
+      "j_thigh2_r",   "j_tibia_r",    "j_ankle1_r",   "j_ankle2_r"};
+  double position[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  update(name, position);
 }
 
 RobotisBody::~RobotisBody() {}
@@ -57,21 +70,36 @@ void RobotisBody::setLinksCoGVector(urdf::Model model) {
 
     Vector3 v = Vector3::Zero();
     v << links[link_name]->inertial->origin.position.x,
-         links[link_name]->inertial->origin.position.y,
-         links[link_name]->inertial->origin.position.z;
+        links[link_name]->inertial->origin.position.y,
+        links[link_name]->inertial->origin.position.z;
     link_cogs[link_name] = v;
   }
 }
 
 Vector3 RobotisBody::calcCenterOfMass() {
   Vector3 mc = Vector3::Zero();
+
   for (std::string link_name : link_names) {
-    Affine3 j = body->getGlobalLinkTransform(link_name);
-    Vector3 c = j.translation() + j.rotation()*link_cogs[link_name];
-    mc += link_masses[link_name]*c;
+    Affine3 j = link_trans[link_name];
+    Vector3 c = j.translation() + j.rotation() * link_cogs[link_name];
+    mc += link_masses[link_name] * c;
+    // std::cout << link_name << std::endl; std::cout << j.matrix() <<
+    // std::endl;
   }
-  Vector3 com = mc/total_mass;
-  return com;
+
+  return (mc / total_mass);
+}
+
+// update body state. You must call this method in loop.
+void RobotisBody::update(std::string joint_name[], double position[]) {
+  for (int i = 0; i < dof; i++) {
+    body->setJointPositions(joint_name[i], &position[i]);
+  }
+
+  body->update();
+  for (std::string link_name : link_names) {
+    link_trans[link_name] = body->getGlobalLinkTransform(link_name);
+  }
 }
 
 }  // namespace robotis
