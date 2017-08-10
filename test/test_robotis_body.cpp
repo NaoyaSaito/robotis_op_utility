@@ -14,7 +14,7 @@ TEST(RobotisBodyTest, ModelMass) {
 TEST(RobotisBodyTest, CenterOfMass) {
   ros::NodeHandle nh;
   RobotisBody body(nh);
-  Vector3 v = body.calcCenterOfMass();
+  EVector3 v = body.calcCenterOfMass();
   std::cout << "CoM : " << v(0) << ", " << v(1) << ", " << v(2) << std::endl;
   SUCCEED();  // CoM test is difficult....
 }

@@ -81,7 +81,7 @@ EVector3 RobotisBody::calcCenterOfMass() {
   EVector3 mc = EVector3::Zero();
 
   for (std::string link_name : link_names) {
-    Affine3 j = link_trans[link_name];
+    EAffine3 j = link_trans[link_name];
     EVector3 c = j.translation() + j.rotation() * link_cogs[link_name];
     mc += link_masses[link_name] * c;
     // std::cout << link_name << j.matrix() << std::endl;
