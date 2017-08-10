@@ -21,6 +21,7 @@ RobotisBody::RobotisBody(ros::NodeHandle nnh) {
   total_mass = setModelMass(urdf_model);
   setLinksCoGVector(urdf_model);
 
+  // initialize joint position
   std::string name[] = {
       "j_shoulder_l", "j_high_arm_l", "j_low_arm_l",  "j_wrist_l",
       "j_gripper_l",  "j_shoulder_r", "j_high_arm_r", "j_low_arm_r",
@@ -68,7 +69,7 @@ void RobotisBody::setLinksCoGVector(urdf::Model model) {
   for (std::string link_name : link_names) {
     if (link_name == "base_link" || link_name == "MP_PMDCAMBOARD") continue;
 
-    Vector3 v = Vector3::Zero();
+    EVector3 v = EVector3::Zero();
     v << links[link_name]->inertial->origin.position.x,
         links[link_name]->inertial->origin.position.y,
         links[link_name]->inertial->origin.position.z;
@@ -76,21 +77,21 @@ void RobotisBody::setLinksCoGVector(urdf::Model model) {
   }
 }
 
-Vector3 RobotisBody::calcCenterOfMass() {
-  Vector3 mc = Vector3::Zero();
+EVector3 RobotisBody::calcCenterOfMass() {
+  EVector3 mc = EVector3::Zero();
 
   for (std::string link_name : link_names) {
     Affine3 j = link_trans[link_name];
-    Vector3 c = j.translation() + j.rotation() * link_cogs[link_name];
+    EVector3 c = j.translation() + j.rotation() * link_cogs[link_name];
     mc += link_masses[link_name] * c;
-    // std::cout << link_name << std::endl; std::cout << j.matrix() <<
-    // std::endl;
+    // std::cout << link_name << j.matrix() << std::endl;
   }
 
   return (mc / total_mass);
 }
 
 // update body state. You must call this method in loop.
+// Recommend call in joint_state subscriber
 void RobotisBody::update(std::string joint_name[], double position[]) {
   for (int i = 0; i < dof; i++) {
     body->setJointPositions(joint_name[i], &position[i]);

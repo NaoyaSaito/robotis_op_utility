@@ -21,12 +21,12 @@ public:
   RobotisBody(ros::NodeHandle nnh);
   ~RobotisBody();
 
-  Vector3 calcCenterOfMass();
+  EVector3 calcCenterOfMass();
   void update(std::string joint_name[], double position[]);
 
   std::vector<std::string> link_names;
   std::map<std::string, double> link_masses;  // link_name : link_mass[kg]
-  std::map<std::string, Vector3> link_cogs;  // link CoG[m](link coodinate)
+  std::map<std::string, EVector3> link_cogs;  // link CoG[m](link coodinate)
   std::map<std::string, Affine3d> link_trans; // link affine matrix
 
   double total_mass;  // model mass[kg]

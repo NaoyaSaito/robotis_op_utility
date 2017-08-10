@@ -50,30 +50,30 @@ using Eigen::Affine3d;
 using Eigen::Translation3f;
 using Eigen::Translation3d;
 
-typedef Eigen::Matrix2d Matrix2;
-typedef Eigen::Vector2d Vector2;
-typedef Eigen::Matrix3d Matrix3;
-typedef Eigen::Vector3d Vector3;
+typedef Eigen::Matrix2d EMatrix2;
+typedef Eigen::Vector2d EVector2;
+typedef Eigen::Matrix3d EMatrix3;
+typedef Eigen::Vector3d EVector3;
 //typedef Eigen::AlignedVector3<double> Vector3;
-typedef Eigen::Matrix4d Matrix4;
-typedef Eigen::Vector4d Vector4;
-typedef Eigen::VectorXd VectorX;
-typedef Eigen::Matrix<double, 6, 1> Vector6;
-typedef Eigen::Affine3d Affine3;
-typedef Eigen::Translation3d Translation3;
-typedef Eigen::AngleAxisd AngleAxis;
+typedef Eigen::Matrix4d EMatrix4;
+typedef Eigen::Vector4d EVector4;
+typedef Eigen::VectorXd EVectorX;
+typedef Eigen::Matrix<double, 6, 1> EVector6;
+typedef Eigen::Affine3d EAffine3;
+typedef Eigen::Translation3d ETranslation3;
+typedef Eigen::AngleAxisd EAngleAxis;
 
 //! \deprecated
-typedef Eigen::Quaterniond Quat;
+typedef Eigen::Quaterniond EQuat;
 
-typedef Eigen::Quaterniond Quaternion;
+typedef Eigen::Quaterniond EQuaternion;
 
-typedef Eigen::Transform<double, 3, Eigen::AffineCompact> Position;
+typedef Eigen::Transform<double, 3, Eigen::AffineCompact> EPosition;
 
 // The followings should be removed later
 using Eigen::Isometry3f;
 using Eigen::Isometry3d;
-typedef Eigen::Isometry3d Isometry3;
+typedef Eigen::Isometry3d EIsometry3;
 
 // class SE3 {
 //     Vector3 p;
