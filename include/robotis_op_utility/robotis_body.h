@@ -7,6 +7,9 @@
 #include <string>
 #include <map>
 
+#include <urdf/model.h>
+#include <urdf_model/link.h>
+
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_state/robot_state.h>
@@ -17,18 +20,22 @@ class RobotisBody {
 public:
   RobotisBody(ros::NodeHandle nnh);
   ~RobotisBody();
-  const Vector3& calcCenterOfMass();
+
+  Vector3 calcCenterOfMass();
 
   std::vector<std::string> link_names;
-  std::map<std::string, double> link_masses;
+  std::map<std::string, double> link_masses;  // link_name : link_mass[kg]
+  std::map<std::string, Vector3> link_cogs;  // link CoG[m](link coodinate)
 
   double total_mass;  // model mass[kg]
 
 private:
-  double setModelMass();
+  urdf::Model readUrdfFile(const std::string param_name);
+  double setModelMass(urdf::Model model);
+  void setLinksCoGVector(urdf::Model model);
 
   ros::NodeHandle nh;
-  robot_model::RobotModelPtr body;
+  robot_state::RobotStatePtr body;
 };
 
 } // namespace robotis
