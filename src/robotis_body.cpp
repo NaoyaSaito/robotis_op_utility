@@ -37,7 +37,7 @@ RobotisBody::RobotisBody(ros::NodeHandle nnh) {
 
 RobotisBody::~RobotisBody() {}
 
-urdf::Model RobotisBody::readUrdfFile(const std::string param_name) {
+urdf::Model RobotisBody::readUrdfFile(const std::string& param_name) {
   urdf::Model model;
   if (!model.initParam(param_name)) {
     ROS_WARN("[RobotisBody] Don't read URDF file");
@@ -47,7 +47,7 @@ urdf::Model RobotisBody::readUrdfFile(const std::string param_name) {
 
 // set links mass("link_masses") and model total mass
 // return: model total mass
-double RobotisBody::setModelMass(urdf::Model model) {
+double RobotisBody::setModelMass(const urdf::Model& model) {
   double m = 0.0;
   auto links = model.links_;  // std::map <string, urdf::Link>
 
@@ -63,7 +63,7 @@ double RobotisBody::setModelMass(urdf::Model model) {
 
 // set center of gravity from urdf model
 // set to "link_cogs"
-void RobotisBody::setLinksCoGVector(urdf::Model model) {
+void RobotisBody::setLinksCoGVector(const urdf::Model& model) {
   auto links = model.links_;
 
   for (std::string link_name : link_names) {
@@ -92,7 +92,7 @@ EVector3 RobotisBody::calcCenterOfMass() {
 
 // update body state. You must call this method in loop.
 // Recommend call in joint_state subscriber
-void RobotisBody::update(std::string joint_name[], double position[]) {
+void RobotisBody::update(const std::string (&joint_name)[24], double position[]) {
   for (int i = 0; i < dof; i++) {
     body->setJointPositions(joint_name[i], &position[i]);
   }

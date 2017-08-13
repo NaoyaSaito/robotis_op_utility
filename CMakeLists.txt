@@ -124,7 +124,7 @@ include_directories(
 
 set(HEADERS
   include/${PROJECT_NAME}/robotis_body.h
-  # include/${PROJECT_NAME}/eigen_types.h
+  include/${PROJECT_NAME}/eigen_types.h
 )
 
 set(SOURCES
@@ -157,7 +157,8 @@ add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 ## Specify libraries to link a library or executable target against
 target_link_libraries(robotis_op_utility
   ${catkin_LIBRARIES}
-  ${eigen3_LIBRARIES}
+  # ${eigen3_LIBRARIES}
+  /usr/include/eigen3
 )
 
 #############
@@ -182,11 +183,11 @@ target_link_libraries(robotis_op_utility
 # )
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

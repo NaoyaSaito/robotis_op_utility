@@ -22,7 +22,7 @@ public:
   ~RobotisBody();
 
   EVector3 calcCenterOfMass();
-  void update(std::string joint_name[], double position[]);
+  void update(const std::string (&joint_name)[24], double position[]);
 
   std::vector<std::string> link_names;
   std::map<std::string, double> link_masses;  // link_name : link_mass[kg]
@@ -33,9 +33,9 @@ public:
   int dof;
 
 private:
-  urdf::Model readUrdfFile(const std::string param_name);
-  double setModelMass(urdf::Model model);
-  void setLinksCoGVector(urdf::Model model);
+  urdf::Model readUrdfFile(const std::string& param_name);
+  double setModelMass(const urdf::Model& model);
+  void setLinksCoGVector(const urdf::Model& model);
 
   ros::NodeHandle nh;
   robot_state::RobotStatePtr body;
