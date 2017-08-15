@@ -93,7 +93,7 @@ EVector3 RobotisBody::calcCenterOfMass() {
 // update body state. You must call this method in loop.
 // Recommend call in joint_state subscriber
 void RobotisBody::update(const std::string (&joint_name)[24], double position[]) {
-  for (int i = 0; i < dof; i++) {
+  for (int i = 0; i < dof; ++i) {
     body->setJointPositions(joint_name[i], &position[i]);
   }
 
