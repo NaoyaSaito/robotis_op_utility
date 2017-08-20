@@ -17,11 +17,11 @@ class OdomPub {
     if (arg == "cmd_vel") {
       sub = nh.subscribe("/robotis_op/cmd_vel", 1000, &OdomPub::velCallback,
                          this);
-    } else if (arg == "Pose2D") {
-      sub = nh.subscribe("/robotis_op/Pose2D", 1000, &OdomPub::pose2dCallback,
+    } else if (arg == "cmd_pos") {
+      sub = nh.subscribe("/robotis_op/cmd_pos", 1000, &OdomPub::pose2dCallback,
                          this);
     } else {
-      ROS_ERROR("[odom_pub] Choose robot order topic(cmd_vel or Pose2D).");
+      ROS_ERROR("[odom_pub] Choose robot order topic(cmd_vel or cmd_pos).");
     }
 
     current_time = ros::Time::now();
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "robotis_op_odom_pub");
 
   if (argc != 2) {
-    ROS_ERROR("[odom_pub] Choose robot order topic(cmd_vel or Pose2D).Finish.");
+    ROS_ERROR("[odom_pub] Choose robot order topic(cmd_vel or cmd_pos).Finish.");
     return 0;
   }
 
