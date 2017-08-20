@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   geometry_msgs
+  sensor_msgs
   nav_msgs
   tf
   moveit_ros_move_group
@@ -109,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES robotis_op_utility
- CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs nav_msgs tf
+ CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs nav_msgs tf sensor_msgs
  DEPENDS system_lib
 )
 
@@ -160,6 +161,9 @@ add_executable(robotis_op_odom_pub src/odom_pub.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(robotis_op_odom_pub
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 

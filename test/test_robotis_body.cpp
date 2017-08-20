@@ -6,14 +6,14 @@ using namespace robotis;
 
 // check total mass
 TEST(RobotisBodyTest, ModelMass) {
-  ros::NodeHandle nh;
-  RobotisBody body(nh);
+  // ros::NodeHandle nh;
+  RobotisBody body;
   EXPECT_NEAR(body.total_mass, 3.21961, 0.001);
 }
 
 TEST(RobotisBodyTest, CenterOfMass) {
-  ros::NodeHandle nh;
-  RobotisBody body(nh);
+  // ros::NodeHandle nh;
+  RobotisBody body;
   EVector3 v = body.calcCenterOfMass();
   std::cout << "CoM : " << v(0) << ", " << v(1) << ", " << v(2) << std::endl;
   SUCCEED();  // CoM test is difficult....

@@ -5,10 +5,13 @@
 
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 #include <urdf/model.h>
 #include <urdf_model/link.h>
+
+#include <std_msgs/Float64.h>
+#include <sensor_msgs/JointState.h>
 
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
@@ -16,18 +19,22 @@
 
 namespace robotis {
 
-class RobotisBody {
+class RobotisBody : ros::NodeHandle{
 public:
-  RobotisBody(ros::NodeHandle nnh);
+  RobotisBody();
   ~RobotisBody();
 
   EVector3 calcCenterOfMass();
-  void update(const std::string (&joint_name)[24], double position[]);
+  void update(const sensor_msgs::JointState& msg);
+  void moveInitPosition(const sensor_msgs::JointState& jsmsg);
 
   std::vector<std::string> link_names;
-  std::map<std::string, double> link_masses;  // link_name : link_mass[kg]
-  std::map<std::string, EVector3> link_cogs;  // link CoG[m](link coodinate)
-  std::map<std::string, Affine3d> link_trans; // link affine matrix
+  std::unordered_map<std::string, double> link_masses;  // link_name : link_mass[kg]
+  std::unordered_map<std::string, EVector3> link_cogs;  // link CoG[m](link coodinate)
+  std::unordered_map<std::string, Affine3d> link_affine; // link affine matrix
+  std::unordered_map<std::string, double> init_joint_angle;
+
+  std::vector<std::string> joint_names;
 
   double total_mass;  // model mass[kg]
   int dof;
@@ -37,8 +44,8 @@ private:
   double setModelMass(const urdf::Model& model);
   void setLinksCoGVector(const urdf::Model& model);
 
-  ros::NodeHandle nh;
   robot_state::RobotStatePtr body;
+  std::unordered_map<std::string, ros::Publisher> joint_cmd_pubs;
 };
 
 } // namespace robotis

@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     rospy.loginfo("Darwin Walker Demo Starting")
 
-    rate = rospy.Rate(100)
+    rate = rospy.Rate(1000)
     while not rospy.is_shutdown():
         darwin.set_walk_velocity(0.5, 0, 0)
         rate.sleep()
