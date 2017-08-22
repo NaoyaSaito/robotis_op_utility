@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_ros_move_group
 )
 
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
