@@ -131,6 +131,7 @@ bool RobotisBody::calkIKofWalkingMotion(
     std::unordered_map<std::string, double>& joint_values) {
   std::vector<double> right_joint_values, left_joint_values;
 
+  // set translation amount
   Translation3 right_tr = Translation3(
     right_leg.translation().x() - com.x(),
     right_leg.translation().y() - com.y(),
@@ -140,25 +141,25 @@ bool RobotisBody::calkIKofWalkingMotion(
     left_leg.translation().y() - com.y(),
     left_leg.translation().z());
 
+  // calc IK
   Affine3 right_end_state;
   right_end_state = right_tr * right_leg.rotation();
-
   bool found_right_ik =
-      body->setFromIK(right_leg_joint_group, right_end_state, 30, 0.001);
+      body->setFromIK(right_leg_joint_group, right_end_state, 50, 0.003);
 
   Affine3 left_end_state;
   left_end_state = left_tr * left_leg.rotation();
   bool found_left_ik =
-      body->setFromIK(left_leg_joint_group, left_end_state, 30, 0.001);
+      body->setFromIK(left_leg_joint_group, left_end_state, 50, 0.003);
 
-  // Now, we can print out the IK solution (if found):
+  // if success IK, push joint value to "joint_values"
   if (found_right_ik) {
     body->copyJointGroupPositions(right_leg_joint_group, right_joint_values);
     for (std::size_t i = 0; i < right_leg_joint_names.size(); ++i) {
       joint_values[right_leg_joint_names[i]] = right_joint_values[i];
     }
   } else {
-    ROS_INFO("[RobotisBody] Did not find IK solution right");
+    ROS_WARN("[RobotisBody] Did not find IK solution right");
     return false;
   }
   if (found_left_ik) {
@@ -167,7 +168,7 @@ bool RobotisBody::calkIKofWalkingMotion(
       joint_values[left_leg_joint_names[i]] = left_joint_values[i];
     }
   } else {
-    ROS_INFO("[RobotisBody] Did not find IK solution left");
+    ROS_WARN("[RobotisBody] Did not find IK solution left");
     return false;
   }
   return true;
@@ -185,7 +186,7 @@ void RobotisBody::publishJointCommand(
 urdf::Model RobotisBody::readUrdfFile(const std::string& param_name) {
   urdf::Model model;
   if (!model.initParam(param_name)) {
-    ROS_WARN("[RobotisBody] Don't read URDF file");
+    ROS_ERROR("[RobotisBody] Don't read URDF file");
   }
   return model;
 }

@@ -34,12 +34,12 @@ class RobotisBody : ros::NodeHandle {
       std::unordered_map<std::string, double>& joint_values);
 
   std::vector<std::string> link_names;
-  std::unordered_map<std::string, double>
-      link_masses;  // link_name : link_mass[kg]
-  std::unordered_map<std::string, Vector3>
-      link_cogs;  // link CoG[m](link coodinate)
-  std::unordered_map<std::string, Affine3d> link_affine;  // link affine matrix
-  std::unordered_map<std::string, double> init_joint_angle;
+  // link_name : link_mass[kg]
+  std::unordered_map<std::string, double> link_masses;
+  // link CoG[m](link coodinate)
+  std::unordered_map<std::string, Vector3> link_cogs;
+  // link affine matrix
+  std::unordered_map<std::string, Affine3d> link_affine;
 
   std::vector<std::string> joint_names;
 
@@ -55,6 +55,7 @@ class RobotisBody : ros::NodeHandle {
   const robot_state::JointModelGroup* right_leg_joint_group;
   const robot_state::JointModelGroup* left_leg_joint_group;
 
+  std::unordered_map<std::string, double> init_joint_angle;
   std::vector<std::string> right_leg_joint_names;
   std::vector<std::string> left_leg_joint_names;
   std::unordered_map<std::string, ros::Publisher> joint_cmd_pubs;
