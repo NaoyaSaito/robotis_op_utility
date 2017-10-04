@@ -64,15 +64,10 @@ RobotisBody::RobotisBody() {
   }
 
   // initialize joint position
-  sensor_msgs::JointState js;
-  js.name = {"j_shoulder_l", "j_high_arm_l", "j_low_arm_l",  "j_wrist_l",
-             "j_gripper_l",  "j_shoulder_r", "j_high_arm_r", "j_low_arm_r",
-             "j_wrist_r",    "j_gripper_r",  "j_pan",        "j_tilt",
-             "j_pelvis_l",   "j_thigh1_l",   "j_thigh2_l",   "j_tibia_l",
-             "j_ankle1_l",   "j_ankle2_l",   "j_pelvis_r",   "j_thigh1_r",
-             "j_thigh2_r",   "j_tibia_r",    "j_ankle1_r",   "j_ankle2_r"};
-  js.position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  std::unordered_map<std::string, double> js;
+  for (auto joint : joint_names) {
+    js[joint] = 0.0;
+  }
   update(js);
 }
 
@@ -92,11 +87,18 @@ Vector3 RobotisBody::calcCenterOfMass() {
 
 // update body state. You must call this method in loop.
 // Recommend call in joint_state subscriber
-void RobotisBody::update(const sensor_msgs::JointState& msg) {
+void RobotisBody::update(const sensor_msgs::JointState& msgs) {
+  std::unordered_map<std::string, double> values;
   for (int i = 0; i < dof; ++i) {
-    body->setJointPositions(msg.name[i], &msg.position[i]);
+    values[msgs.name[i]] = msgs.position[i];
   }
+  update(values);
+}
 
+void RobotisBody::update(const unordered_map<std::string, double>& msgs) {
+  for (auto msg : msgs) {
+    body->setJointPositions(msg.first, &msg.second);
+  }
   body->update();
   for (std::string link_name : link_names) {
     link_affine[link_name] = body->getGlobalLinkTransform(link_name);
@@ -133,7 +135,7 @@ void RobotisBody::moveInitPosition(const sensor_msgs::JointState& jsmsg) {
 // @param com : next Center of Mass position (world coodinate)
 // @param right_leg : next right leg position (world coodinate)
 // @param left_leg : next left leg position (world coodinate)
-// @param(return) joint_values : unorderd_map<key:joint name, value:joint angle>
+// @param(return) joint_values : unordered_map<key:joint name, value:joint angle>
 // @return : true: success IK, false: miss IK
 bool RobotisBody::calcIKofWalkingMotion(
     const Vector3& com, const Affine3& right_leg, const Affine3& left_leg,
@@ -184,7 +186,7 @@ bool RobotisBody::calcIKofWalkingMotion(
 }
 
 // publish joint angle to ROBOTIS-OP2
-// @param joint_values: unorderd_map<key: joint name, value: joint angle>
+// @param joint_values: unordered_map<key: joint name, value: joint angle>
 void RobotisBody::publishJointCommand(
     std::unordered_map<std::string, double>& joint_values) {
   for (auto joint : joint_values) {
