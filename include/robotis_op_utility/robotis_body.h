@@ -27,7 +27,7 @@ class RobotisBody : ros::NodeHandle {
   Vector3 calcCenterOfMass();
   void update(const sensor_msgs::JointState& msg);
   void moveInitPosition(const sensor_msgs::JointState& jsmsg);
-  bool calkIKofWalkingMotion(
+  bool calcIKofWalkingMotion(
       const Vector3& com, const Affine3& right_leg, const Affine3& left_leg,
       std::unordered_map<std::string, double>& joint_values);
   void publishJointCommand(

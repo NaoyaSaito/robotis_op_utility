@@ -76,6 +76,8 @@ RobotisBody::RobotisBody() {
   update(js);
 }
 
+// calculate Center of Mass
+// @return : now Center of Mass
 Vector3 RobotisBody::calcCenterOfMass() {
   Vector3 mc = Vector3::Zero();
 
@@ -83,7 +85,6 @@ Vector3 RobotisBody::calcCenterOfMass() {
     Affine3 j = link_affine[link_name];
     Vector3 c = j.translation() + j.rotation() * link_cogs[link_name];
     mc += link_masses[link_name] * c;
-    // std::cout << link_name << j.matrix() << std::endl;
   }
 
   return (mc / total_mass);
@@ -102,6 +103,8 @@ void RobotisBody::update(const sensor_msgs::JointState& msg) {
   }
 }
 
+// move initial joint position
+// @param jsmsg : now joint state
 void RobotisBody::moveInitPosition(const sensor_msgs::JointState& jsmsg) {
   // set now joint_state to "js"
   std::unordered_map<std::string, double> js;
@@ -126,7 +129,13 @@ void RobotisBody::moveInitPosition(const sensor_msgs::JointState& jsmsg) {
   ROS_INFO("[RobotisBody] complete move init position");
 }
 
-bool RobotisBody::calkIKofWalkingMotion(
+// calculate Inverse Kinematics of walking motion
+// @param com : next Center of Mass position (world coodinate)
+// @param right_leg : next right leg position (world coodinate)
+// @param left_leg : next left leg position (world coodinate)
+// @param(return) joint_values : unorderd_map<key:joint name, value:joint angle>
+// @return : true: success IK, false: miss IK
+bool RobotisBody::calcIKofWalkingMotion(
     const Vector3& com, const Affine3& right_leg, const Affine3& left_leg,
     std::unordered_map<std::string, double>& joint_values) {
   std::vector<double> right_joint_values, left_joint_values;
@@ -155,7 +164,7 @@ bool RobotisBody::calkIKofWalkingMotion(
   // if success IK, push joint value to "joint_values"
   if (found_right_ik) {
     body->copyJointGroupPositions(right_leg_joint_group, right_joint_values);
-    for (std::size_t i = 0; i < right_leg_joint_names.size(); ++i) {
+    for (std::size_t i = 0, n = right_leg_joint_names.size(); i < n; ++i) {
       joint_values[right_leg_joint_names[i]] = right_joint_values[i];
     }
   } else {
@@ -164,7 +173,7 @@ bool RobotisBody::calkIKofWalkingMotion(
   }
   if (found_left_ik) {
     body->copyJointGroupPositions(left_leg_joint_group, left_joint_values);
-    for (std::size_t i = 0; i < left_leg_joint_names.size(); ++i) {
+    for (std::size_t i = 0, n = left_leg_joint_names.size(); i < n; ++i) {
       joint_values[left_leg_joint_names[i]] = left_joint_values[i];
     }
   } else {
@@ -174,6 +183,8 @@ bool RobotisBody::calkIKofWalkingMotion(
   return true;
 }
 
+// publish joint angle to ROBOTIS-OP2
+// @param joint_values: unorderd_map<key: joint name, value: joint angle>
 void RobotisBody::publishJointCommand(
     std::unordered_map<std::string, double>& joint_values) {
   for (auto joint : joint_values) {
