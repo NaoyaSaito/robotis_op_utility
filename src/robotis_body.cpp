@@ -95,7 +95,7 @@ void RobotisBody::update(const sensor_msgs::JointState& msgs) {
   update(values);
 }
 
-void RobotisBody::update(const unordered_map<std::string, double>& msgs) {
+void RobotisBody::update(const std::unordered_map<std::string, double>& msgs) {
   for (auto msg : msgs) {
     body->setJointPositions(msg.first, &msg.second);
   }
