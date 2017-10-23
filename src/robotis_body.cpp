@@ -141,6 +141,7 @@ bool RobotisBody::calcIKofWalkingMotion(
     const Vector3& com, const Affine3& right_leg, const Affine3& left_leg,
     std::unordered_map<std::string, double>& joint_values) {
   std::vector<double> right_joint_values, left_joint_values;
+  // double right_joint_values[6], left_joint_values[6];
 
   // set translation amount
   Translation3 right_tr = Translation3(
@@ -155,17 +156,17 @@ bool RobotisBody::calcIKofWalkingMotion(
   // calc IK
   Affine3 right_end_state;
   right_end_state = right_tr * right_leg.rotation();
-  bool found_right_ik =
-      body->setFromIK(right_leg_joint_group, right_end_state, 50, 0.003);
+  // bool found_right_ik = opik.computeIKold(right_joint_values, right_end_state);
+  bool found_right_ik = body->setFromIK(right_leg_joint_group, right_end_state, 30, 0.001);
 
   Affine3 left_end_state;
   left_end_state = left_tr * left_leg.rotation();
-  bool found_left_ik =
-      body->setFromIK(left_leg_joint_group, left_end_state, 50, 0.003);
+  // bool found_left_ik = opik.computeIKold(left_joint_values, left_end_state);
+  bool found_left_ik = body->setFromIK(left_leg_joint_group, left_end_state, 30, 0.001);
 
   // if success IK, push joint value to "joint_values"
   if (found_right_ik) {
-    body->copyJointGroupPositions(right_leg_joint_group, right_joint_values);
+    // body->copyJointGroupPositions(right_leg_joint_group, right_joint_values);
     for (std::size_t i = 0, n = right_leg_joint_names.size(); i < n; ++i) {
       joint_values[right_leg_joint_names[i]] = right_joint_values[i];
     }
@@ -174,9 +175,9 @@ bool RobotisBody::calcIKofWalkingMotion(
     return false;
   }
   if (found_left_ik) {
-    body->copyJointGroupPositions(left_leg_joint_group, left_joint_values);
+    // body->copyJointGroupPositions(left_leg_joint_group, left_joint_values);
     for (std::size_t i = 0, n = left_leg_joint_names.size(); i < n; ++i) {
-      joint_values[left_leg_joint_names[i]] = left_joint_values[i];
+      joint_values[left_leg_joint_names[i]] = -left_joint_values[i];
     }
   } else {
     ROS_WARN("[RobotisBody] Did not find IK solution left");
@@ -234,6 +235,28 @@ void RobotisBody::setLinksCoGVector(const urdf::Model& model) {
         links[link_name]->inertial->origin.position.z;
     link_cogs[link_name] = v;
   }
+}
+
+
+void RobotisBody::demoWPG(){
+  double angle[14];
+  demowpg.Start();
+  demowpg.Process(angle);
+
+  std::unordered_map<std::string, double> joint_values;
+  joint_values["j_pelvis_r"] = angle[0];
+  joint_values["j_thigh1_r"] = angle[1];
+  joint_values["j_thigh2_r"] = angle[2];
+  joint_values["j_tibia_r"] = angle[3];
+  joint_values["j_ankle1_r"] = angle[4];
+  joint_values["j_ankle2_r"] = angle[5];
+  joint_values["j_pelvis_l"] = angle[6];
+  joint_values["j_thigh1_l"] = angle[7];
+  joint_values["j_thigh2_l"] = angle[8];
+  joint_values["j_tibia_l"] = angle[9];
+  joint_values["j_ankle1_l"] = angle[10];
+  joint_values["j_ankle2_l"] = angle[11];
+  publishJointCommand(joint_values);
 }
 
 }  // namespace robotis

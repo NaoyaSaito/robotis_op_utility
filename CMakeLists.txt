@@ -129,12 +129,24 @@ include_directories(
 
 set(HEADERS
   include/${PROJECT_NAME}/robotis_body.h
+  include/${PROJECT_NAME}/robotis_ik.h
   include/${PROJECT_NAME}/eigen_types.h
+  include/${PROJECT_NAME}/math/Matrix.h
+  include/${PROJECT_NAME}/math/Plane.h
+  include/${PROJECT_NAME}/math/Point.h
+  include/${PROJECT_NAME}/math/Vector.h
+  include/${PROJECT_NAME}/Walking.h
 )
 
 set(SOURCES
   src/robotis_body.cpp
+  src/robotis_ik.cpp
   src/odom_pub.cpp
+  src/math/Matrix.cpp
+  src/math/Plane.cpp
+  src/math/Point.cpp
+  src/math/Vector.cpp
+  src/Walking.cpp
 )
 
 ## Declare a C++ library

@@ -2,6 +2,8 @@
 #define ROBOTIS_OP_UTILITY_ROBOTIS_BODY_H_
 
 #include <robotis_op_utility/eigen_types.h>
+#include <robotis_op_utility/robotis_ik.h>
+#include <robotis_op_utility/Walking.h>
 
 #include <string>
 #include <unordered_map>
@@ -33,6 +35,7 @@ class RobotisBody : ros::NodeHandle {
       std::unordered_map<std::string, double>& joint_values);
   void publishJointCommand(
       std::unordered_map<std::string, double>& joint_values);
+  void demoWPG();
 
   std::vector<std::string> link_names;
   // link_name : link_mass[kg]
@@ -48,6 +51,9 @@ class RobotisBody : ros::NodeHandle {
   int dof;
 
  private:
+  RobotisIk opik;
+  Walking demowpg;
+
   urdf::Model readUrdfFile(const std::string& param_name);
   double setModelMass(const urdf::Model& model);
   void setLinksCoGVector(const urdf::Model& model);
